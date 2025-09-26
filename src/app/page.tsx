@@ -1,103 +1,157 @@
-import Image from "next/image";
+'use client'
+
+import { useState, useEffect } from 'react'
+import ProductCard from '@/app/components/ProductCard'
+import Header from '@/app/components/Header'
+import Footer from '@/app/components/Footer'
+import HeroCarousel from '@/app/components/HeroCarousel'
+import FloatingWhatsApp from '@/app/components/FloatingWhatsApp'
+import { getProducts, Product } from '@/sanity/lib/queries'
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  // Hero carousel images - using the uploaded hero images
+  const heroImages = [
+    '/images/hero/IMG_8631.jpg',
+    '/images/hero/IMG_8619.jpg',
+    '/images/hero/IMG_8643.jpg',
+    '/images/hero/IMG_8668.jpg',
+    '/images/hero/IMG_8702.jpg',
+    '/images/hero/IMG_8782.jpg',
+    '/images/hero/IMG_8806.jpg',
+    '/images/hero/IMG_8831.jpg',
+    '/images/hero/IMG_8850.jpg',
+    '/images/hero/IMG_8852.jpg'
+  ]
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  // Products from Sanity CMS
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const productsData = await getProducts()
+        setProducts(productsData)
+      } catch (error) {
+        console.error('Error fetching products:', error)
+        // Fallback to sample data if Sanity is not available
+        setProducts([
+          {
+            _id: '1',
+            name: "Signature Pasta",
+            description: "Handmade pasta with our signature sauce, fresh herbs, and parmesan cheese",
+            price: 24.99,
+            image: {
+              asset: {
+                _id: 'sample1',
+                url: '/images/ae221058-f0c5-4914-9560-33628ce50ee9.jpg'
+              }
+            },
+            category: "food",
+            featured: false,
+            slug: { current: 'signature-pasta' }
+          },
+          {
+            _id: '2',
+            name: "Artisan Coffee",
+            description: "Freshly roasted coffee beans, expertly brewed to perfection",
+            price: 8.99,
+            image: {
+              asset: {
+                _id: 'sample2',
+                url: '/images/b0984f38-0e6a-4400-92fd-833785a22ef4.jpg'
+              }
+            },
+            category: "beverages",
+            featured: false,
+            slug: { current: 'artisan-coffee' }
+          },
+          {
+            _id: '3',
+            name: "Gourmet Burger",
+            description: "Premium beef patty with fresh vegetables and our special sauce on a brioche bun",
+            price: 32.99,
+            image: {
+              asset: {
+                _id: 'sample3',
+                url: '/images/bf51c5e7-bcb6-4740-baed-2e444ff8d53e.jpg'
+              }
+            },
+            category: "main-course",
+            featured: true,
+            slug: { current: 'gourmet-burger' }
+          },
+          {
+            _id: '4',
+            name: "Fresh Smoothie",
+            description: "Blend of seasonal fruits with yogurt and honey, refreshingly healthy",
+            price: 6.50,
+            image: {
+              asset: {
+                _id: 'sample4',
+                url: '/images/dd05809b-81d8-4cc3-815c-e6a7008e527f.jpg'
+              }
+            },
+            category: "beverages",
+            featured: false,
+            slug: { current: 'fresh-smoothie' }
+          }
+        ])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, [])
+  
+
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Carousel Section */}
+      <HeroCarousel images={heroImages} />
+      
+      {/* Navigation - Fixed position for after hero */}
+      <div className="sticky top-0 z-40">
+        <Header />
+      </div>
+      
+      <main id="menu" className="container mx-auto px-4 py-6">
+        <section className="mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-black mb-2 text-center">
+            Bistro Menu
+          </h1>
+          <p className="text-gray-700 text-center mb-6">
+            Delicious food and refreshing drinks delivered fresh
+          </p>
+        </section>
+
+        {/* Products Grid */}
+        <section>
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">Loading delicious menu items...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+              {products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+          )}
+          
+          {!loading && products.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No products available yet.</p>
+              <p className="text-gray-400">Visit <a href="/admin" className="text-yellow-600 hover:underline">/admin</a> to add products!</p>
+            </div>
+          )}
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      
+      <Footer />
+      <FloatingWhatsApp />
     </div>
-  );
+  )
 }
