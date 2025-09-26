@@ -77,7 +77,7 @@ export default function AddProductForm({ onAddProduct }: AddProductFormProps) {
       setImagePreview('')
       
       alert('Product added successfully!')
-    } catch (error) {
+    } catch {
       alert('Error adding product. Please try again.')
     } finally {
       setIsSubmitting(false)

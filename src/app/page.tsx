@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import ProductCard from '@/app/components/ProductCard'
 import Header from '@/app/components/Header'
 import Footer from '@/app/components/Footer'
@@ -144,7 +145,7 @@ export default function Home() {
           {!loading && products.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">No products available yet.</p>
-              <p className="text-gray-400">Visit <a href="/admin" className="text-yellow-600 hover:underline">/admin</a> to add products!</p>
+              <p className="text-gray-400">Visit <Link href="/admin" className="text-yellow-600 hover:underline">/admin</Link> to add products!</p>
             </div>
           )}
         </section>
